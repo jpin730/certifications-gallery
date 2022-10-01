@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { take } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { Certification } from '../interfaces/certification.interface';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class GalleryService {
 
   constructor(private firestore: AngularFirestore) {}
 
-  getAlbum() {
+  getAlbum(): Observable<Certification[]> {
     return this.firestore
       .collection<Certification>(this.collectionName)
       .valueChanges()

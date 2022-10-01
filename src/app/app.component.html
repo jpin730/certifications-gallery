@@ -1,1 +1,30 @@
-<h1>Certifications Gallery</h1>
+<nav class="navbar navbar-dark bg-primary mb-3">
+  <div class="container">
+    <h1 class="navbar-brand mx-auto">Jaime's Certifications</h1>
+  </div>
+</nav>
+
+<div class="container mb-3">
+  <select
+    #categorySelect
+    class="form-select"
+    (change)="filterCertifications(categorySelect.value)">
+    <option selected value="">ALL</option>
+    <option *ngFor="let category of categories" [value]="category">
+      {{ category | uppercase }}
+    </option>
+  </select>
+</div>
+
+<div class="container pb-3" *ngFor="let year of years">
+  <h2>{{ year }}</h2>
+
+  <div class="row">
+    <ng-container *ngFor="let certification of filteredCertifications">
+      <img
+        class="col col-md-6 mb-3"
+        *ngIf="certification.date.startsWith(year)"
+        [src]="certification.image" />
+    </ng-container>
+  </div>
+</div>

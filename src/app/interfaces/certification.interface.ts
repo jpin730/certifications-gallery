@@ -1,5 +1,7 @@
 export interface Certification {
   date: string;
-  description: 'career' | 'edteam' | 'platzi' | 'udemy';
+  category: Category;
   image: string;
 }
+
+export type Category = 'career' | 'edteam' | 'platzi' | 'udemy';
