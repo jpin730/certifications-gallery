@@ -44,3 +44,8 @@ Thumbs.db
 
 # Build
 /docs
+
+# Firebase
+.firebase
+*-debug.log
+.runtimeconfig.json
