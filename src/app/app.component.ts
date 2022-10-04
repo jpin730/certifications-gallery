@@ -24,6 +24,7 @@ import { GalleryService } from './services/gallery.service';
   ],
 })
 export class AppComponent implements OnInit {
+  loading = false;
   filteredCertifications: Certification[] = [];
   filteredCertificationsByYear: { [key: string]: Certification[] } = {};
   filter = '';
@@ -48,20 +49,7 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.galleryService.getAlbum().subscribe((res) => {
-      this.certifications.all = res.sort((a, b) =>
-        b.date.localeCompare(a.date)
-      );
-      this.categories.forEach(
-        (category) =>
-          (this.certifications[category] = this.certifications.all.filter(
-            (el) => el.category === category
-          ))
-      );
-      this.filter = this.route.snapshot.queryParamMap.get('filter') || '';
-      this.location.replaceState('');
-      this.filterCertifications(this.filter);
-    });
+    this.fetchCertifications();
 
     fromEvent(document, 'scroll').subscribe(
       () =>
@@ -100,6 +88,28 @@ export class AppComponent implements OnInit {
       top: 0,
       left: 0,
       behavior: 'smooth',
+    });
+  }
+
+  fetchCertifications(): void {
+    this.loading = true;
+    this.galleryService.getAlbum().subscribe({
+      next: (res) => {
+        this.certifications.all = res.sort((a, b) =>
+          b.date.localeCompare(a.date)
+        );
+        this.categories.forEach(
+          (category) =>
+            (this.certifications[category] = this.certifications.all.filter(
+              (el) => el.category === category
+            ))
+        );
+        this.filter = this.route.snapshot.queryParamMap.get('filter') || '';
+        this.location.replaceState('');
+        this.filterCertifications(this.filter);
+        this.loading = false;
+      },
+      error: () => (this.loading = false),
     });
   }
 }
