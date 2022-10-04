@@ -1,19 +1,52 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { fromEvent } from 'rxjs';
 import { Category, Certification } from './interfaces/certification.interface';
 import { GalleryService } from './services/gallery.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styles: ['.form-select {cursor: pointer}'],
+  styles: [
+    `
+      .clickable {
+        cursor: pointer;
+      }
+      .preview-img {
+        max-height: 100vh;
+        max-width: 100%;
+      }
+      .scroll-to-top {
+        opacity: 0.5;
+        transition: opacity 300ms;
+
+        &:hover {
+          opacity: 0.75;
+        }
+      }
+    `,
+  ],
+  animations: [
+    trigger('inOutAnimation', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('300ms ease-out', style({ opacity: 0.5 })),
+      ]),
+      transition(':leave', [
+        style({ opacity: 0.5 }),
+        animate('300ms ease-in', style({ opacity: 0 })),
+      ]),
+    ]),
+  ],
 })
 export class AppComponent implements OnInit {
   certifications: Certification[] = [];
   filteredCertifications: Certification[] = [];
   filter = '';
   preview = false;
+  showScrollToTop = false;
   certification!: Certification;
   categories: Category[] = ['career', 'edteam', 'platzi', 'udemy'];
   years: string[] = [];
@@ -31,6 +64,11 @@ export class AppComponent implements OnInit {
       this.location.replaceState('');
       this.filterCertifications(this.filter);
     });
+
+    fromEvent(document, 'scroll').subscribe(
+      () =>
+        (this.showScrollToTop = window.pageYOffset / window.screen.height > 0.5)
+    );
   }
 
   filterCertifications(filter: string): void {
@@ -52,5 +90,13 @@ export class AppComponent implements OnInit {
   closePreview(): void {
     document.body.style.overflowY = '';
     this.preview = false;
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
   }
 }
