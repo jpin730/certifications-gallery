@@ -42,13 +42,20 @@ import { GalleryService } from './services/gallery.service';
   ],
 })
 export class AppComponent implements OnInit {
-  certifications: Certification[] = [];
   filteredCertifications: Certification[] = [];
   filter = '';
   preview = false;
   showScrollToTop = false;
   certification!: Certification;
   categories: Category[] = ['career', 'edteam', 'platzi', 'udemy'];
+  // eslint-disable-next-line no-unused-vars
+  certifications: { [key in Category | 'all']: Certification[] } = {
+    all: [],
+    career: [],
+    edteam: [],
+    platzi: [],
+    udemy: [],
+  };
   years: string[] = [];
 
   constructor(
@@ -59,7 +66,15 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.galleryService.getAlbum().subscribe((res) => {
-      this.certifications = res.sort((a, b) => b.date.localeCompare(a.date));
+      this.certifications.all = res.sort((a, b) =>
+        b.date.localeCompare(a.date)
+      );
+      this.categories.forEach(
+        (category) =>
+          (this.certifications[category] = this.certifications.all.filter(
+            (el) => el.category === category
+          ))
+      );
       this.filter = this.route.snapshot.queryParamMap.get('filter') || '';
       this.location.replaceState('');
       this.filterCertifications(this.filter);
@@ -74,8 +89,8 @@ export class AppComponent implements OnInit {
   filterCertifications(filter: string): void {
     this.filteredCertifications =
       filter && this.categories.includes(filter as Category)
-        ? this.certifications.filter((el) => el.category === filter)
-        : [...this.certifications];
+        ? this.certifications[filter as Category]
+        : [...this.certifications.all];
     this.years = [
       ...new Set(this.filteredCertifications.map((el) => el.date.slice(0, 4))),
     ];

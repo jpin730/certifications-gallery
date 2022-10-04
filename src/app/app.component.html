@@ -11,9 +11,9 @@
       class="form-select clickable shadow-sm"
       [value]="filter"
       (change)="filterCertifications(categorySelect.value)">
-      <option selected value="">ALL</option>
+      <option selected value="">ALL ({{ certifications.all.length }})</option>
       <option *ngFor="let category of categories" [value]="category">
-        {{ category | uppercase }}
+        {{ category | uppercase }} ({{ certifications[category].length }})
       </option>
     </select>
   </div>
