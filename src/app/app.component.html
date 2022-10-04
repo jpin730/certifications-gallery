@@ -19,12 +19,16 @@
   </div>
 
   <div class="container mb-4" *ngFor="let year of years">
-    <h2 class="bg-light position-sticky top-0 m-0">{{ year }}</h2>
+    <h2 class="d-inline-block position-sticky top-0 my-0">
+      {{ year }} ({{ filteredCertificationsByYear[year].length }})
+    </h2>
     <hr class="m-0 mt-1 pb-2" />
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3">
-      <ng-container *ngFor="let certification of filteredCertifications">
+      <ng-container
+        *ngFor="let certification of filteredCertificationsByYear[year]">
         <div class="mb-3" *ngIf="certification.date.startsWith(year)">
           <img
+            loading="lazy"
             class="clickable w-100 shadow-sm"
             title="Click to preview image"
             [src]="certification.image"
@@ -45,14 +49,16 @@
   class="d-flex vh-100 vw-100 position-fixed top-0 start-0 bg-dark bg-opacity-75 px-md-5"
   (click)="closePreview()">
   <img
-    loading="lazy"
     class="preview-img m-auto"
     [src]="certification.image"
     (click)="$event.stopPropagation()" />
+  <button
+    type="button"
+    class="btn-close btn-close-white position-fixed top-0 end-0 m-3"></button>
 </div>
 
 <div
-  *ngIf="showScrollToTop"
+  *ngIf="showScrollToTop && !preview"
   title="Go to top"
   class="scroll-to-top bg-primary clickable position-fixed bottom-0 end-0 p-3 m-3 m-lg-5 rounded"
   [@inOutAnimation]

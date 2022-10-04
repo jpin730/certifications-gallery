@@ -25,6 +25,7 @@ import { GalleryService } from './services/gallery.service';
 })
 export class AppComponent implements OnInit {
   filteredCertifications: Certification[] = [];
+  filteredCertificationsByYear: { [key: string]: Certification[] } = {};
   filter = '';
   preview = false;
   showScrollToTop = false;
@@ -76,6 +77,11 @@ export class AppComponent implements OnInit {
     this.years = [
       ...new Set(this.filteredCertifications.map((el) => el.date.slice(0, 4))),
     ];
+    this.years.forEach(
+      (year) =>
+        (this.filteredCertificationsByYear[year] =
+          this.filteredCertifications.filter((el) => el.date.startsWith(year)))
+    );
   }
 
   openPreview(certification: Certification): void {
