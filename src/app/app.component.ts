@@ -9,25 +9,7 @@ import { GalleryService } from './services/gallery.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styles: [
-    `
-      .clickable {
-        cursor: pointer;
-      }
-      .preview-img {
-        max-height: 100vh;
-        max-width: 100%;
-      }
-      .scroll-to-top {
-        opacity: 0.5;
-        transition: opacity 300ms;
-
-        &:hover {
-          opacity: 0.75;
-        }
-      }
-    `,
-  ],
+  styleUrls: ['./app.component.scss'],
   animations: [
     trigger('inOutAnimation', [
       transition(':enter', [
