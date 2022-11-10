@@ -12,7 +12,7 @@ export class GalleryService {
   getAlbum(): Observable<Certification[]> {
     return this.firestore
       .collection<Certification>(this.collectionName)
-      .valueChanges()
+      .valueChanges({ idField: 'id' })
       .pipe(take(1));
   }
 }

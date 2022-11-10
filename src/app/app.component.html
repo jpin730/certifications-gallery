@@ -5,21 +5,21 @@
 </nav>
 
 <div class="min-vh-100">
+  <div class="container mb-4">
+    <select
+      #categorySelect
+      class="form-select clickable shadow-sm"
+      [value]="filter"
+      (change)="filterCertifications(categorySelect.value)">
+      <option selected value="">ALL ({{ certifications.all.length }})</option>
+      <option *ngFor="let category of categories" [value]="category">
+        {{ category | uppercase }} ({{ certifications[category].length }})
+      </option>
+    </select>
+  </div>
+
   <ng-container
     *ngIf="certifications.all.length !== 0; else reloadCertifications">
-    <div class="container mb-4">
-      <select
-        #categorySelect
-        class="form-select clickable shadow-sm"
-        [value]="filter"
-        (change)="filterCertifications(categorySelect.value)">
-        <option selected value="">ALL ({{ certifications.all.length }})</option>
-        <option *ngFor="let category of categories" [value]="category">
-          {{ category | uppercase }} ({{ certifications[category].length }})
-        </option>
-      </select>
-    </div>
-
     <div class="container mb-4" *ngFor="let year of years">
       <h2 class="d-inline-block position-sticky top-0 my-0">
         {{ year }} ({{ filteredCertificationsByYear[year].length }})
@@ -65,6 +65,7 @@
   (click)="closePreview()">
   <img
     class="preview-img m-auto"
+    [title]="certification.id"
     [src]="certification.image"
     (click)="$event.stopPropagation()" />
   <button
