@@ -31,15 +31,8 @@ export class AppComponent implements OnInit {
   preview = false;
   showScrollToTop = false;
   certification!: Certification;
-  categories: Category[] = ['career', 'edteam', 'platzi', 'udemy'];
-  // eslint-disable-next-line no-unused-vars
-  certifications: { [key in Category | 'all']: Certification[] } = {
-    all: [],
-    career: [],
-    edteam: [],
-    platzi: [],
-    udemy: [],
-  };
+  categories: Category[] = [];
+  certifications: Record<string, Certification[]> = {};
   years: string[] = [];
 
   constructor(
@@ -52,8 +45,7 @@ export class AppComponent implements OnInit {
     this.fetchCertifications();
 
     fromEvent(document, 'scroll').subscribe(
-      () =>
-        (this.showScrollToTop = window.pageYOffset / window.screen.height > 0.5)
+      () => (this.showScrollToTop = window.scrollY / window.screen.height > 0.5)
     );
   }
 
@@ -61,7 +53,7 @@ export class AppComponent implements OnInit {
     this.filteredCertifications =
       filter && this.categories.includes(filter as Category)
         ? this.certifications[filter as Category]
-        : [...this.certifications.all];
+        : [...this.certifications['all']];
     this.years = [
       ...new Set(this.filteredCertifications.map((el) => el.date.slice(0, 4))),
     ];
@@ -95,12 +87,17 @@ export class AppComponent implements OnInit {
     this.loading = true;
     this.galleryService.getAlbum().subscribe({
       next: (res) => {
-        this.certifications.all = res.sort((a, b) =>
+        this.certifications['all'] = res.sort((a, b) =>
           b.date.localeCompare(a.date)
         );
+        this.categories = [
+          ...new Set(
+            this.certifications['all'].map(({ category }) => category)
+          ),
+        ];
         this.categories.forEach(
           (category) =>
-            (this.certifications[category] = this.certifications.all.filter(
+            (this.certifications[category] = this.certifications['all'].filter(
               (el) => el.category === category
             ))
         );

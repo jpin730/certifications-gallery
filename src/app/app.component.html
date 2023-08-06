@@ -11,7 +11,9 @@
       class="form-select clickable shadow-sm"
       [value]="filter"
       (change)="filterCertifications(categorySelect.value)">
-      <option selected value="">ALL ({{ certifications.all.length }})</option>
+      <option selected value="">
+        ALL ({{ certifications['all'] && certifications['all'].length }})
+      </option>
       <option *ngFor="let category of categories" [value]="category">
         {{ category | uppercase }} ({{ certifications[category].length }})
       </option>
@@ -19,9 +21,12 @@
   </div>
 
   <ng-container
-    *ngIf="certifications.all.length !== 0; else reloadCertifications">
+    *ngIf="
+      certifications['all'] && certifications['all'].length !== 0;
+      else reloadCertifications
+    ">
     <div class="container mb-4" *ngFor="let year of years">
-      <h2 class="d-inline-block position-sticky top-0 my-0">
+      <h2 class="d-inline-block top-0 my-0">
         {{ year }} ({{ filteredCertificationsByYear[year].length }})
       </h2>
       <hr class="m-0 mt-1 pb-2" />
