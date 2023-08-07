@@ -1,10 +1,23 @@
-<nav class="navbar navbar-dark bg-primary mb-4 shadow-sm">
+<nav
+  class="navbar navbar-dark bg-primary mb-4 shadow-sm position-sticky top-0 z-10">
   <div class="container">
-    <h1 class="navbar-brand mx-auto">Jaime's Certifications Gallery</h1>
+    <h1 class="navbar-brand mx-auto">Jaime Pineda's Certifications Gallery</h1>
   </div>
 </nav>
 
 <div class="min-vh-100">
+  <div class="container mb-4">
+    <div
+      class="alert alert-info alert-dismissible text-center"
+      *ngIf="showAlert">
+      Click or tap on image to enlarge
+      <button
+        type="button"
+        class="btn-close"
+        (click)="showAlert = false"></button>
+    </div>
+  </div>
+
   <div class="container mb-4">
     <select
       #categorySelect
@@ -26,7 +39,7 @@
       else reloadCertifications
     ">
     <div class="container mb-4" *ngFor="let year of years">
-      <h2 class="d-inline-block top-0 my-0">
+      <h2 class="d-inline-block my-0">
         {{ year }} ({{ filteredCertificationsByYear[year].length }})
       </h2>
       <hr class="m-0 mt-1 pb-2" />
@@ -37,7 +50,8 @@
             <img
               loading="lazy"
               class="clickable w-100 shadow-sm"
-              title="Click to preview image"
+              [alt]="certification.id"
+              [title]="certification.id"
               [src]="certification.image"
               (click)="openPreview(certification)" />
           </div>
@@ -60,16 +74,16 @@
 </div>
 
 <footer class="bg-white text-center py-3 shadow-sm">
-  <a href="https://jpin730.github.io/" target="_blank">Jaime Pineda</a>
-  <span>&nbsp;&copy;&nbsp;2022</span>
+  Made by <a href="https://github.com/jpin730" target="_blank">Jaime Pineda</a>
 </footer>
 
 <div
   *ngIf="preview"
-  class="d-flex vh-100 vw-100 position-fixed top-0 start-0 bg-dark bg-opacity-75 px-md-5"
+  class="d-flex vh-100 vw-100 position-fixed top-0 start-0 bg-dark bg-opacity-75 px-md-5 z-100"
   (click)="closePreview()">
   <img
     class="preview-img m-auto"
+    [alt]="certification.id"
     [title]="certification.id"
     [src]="certification.image"
     (click)="$event.stopPropagation()" />
@@ -89,7 +103,7 @@
 
 <div
   *ngIf="loading"
-  class="position-fixed top-0 start-0 d-flex bg-dark bg-opacity-75 min-vh-100 min-vw-100">
+  class="position-fixed top-0 start-0 d-flex bg-dark bg-opacity-75 min-vh-100 min-vw-100 z-100">
   <div
     class="spinner-grow text-light m-auto"
     style="width: 10rem; height: 10rem">

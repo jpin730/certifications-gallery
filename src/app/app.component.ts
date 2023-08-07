@@ -34,6 +34,7 @@ export class AppComponent implements OnInit {
   categories: string[] = [];
   certifications: Record<string, Certification[]> = {};
   years: string[] = [];
+  showAlert = true;
 
   constructor(
     private galleryService: GalleryService,
@@ -97,7 +98,7 @@ export class AppComponent implements OnInit {
           ...new Set(
             this.certifications['all'].map(({ category }) => category)
           ),
-        ];
+        ].sort((a, b) => a.localeCompare(b));
         this.categories.forEach(
           (category) =>
             (this.certifications[category] = this.certifications['all'].filter(
