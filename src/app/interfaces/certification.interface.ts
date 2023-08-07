@@ -1,8 +1,6 @@
 export interface Certification {
   date: string;
-  category: Category;
+  category: string;
   image: string;
   id: string;
 }
-
-export type Category = 'career' | 'edteam' | 'platzi' | 'udemy';

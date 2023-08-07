@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { fromEvent } from 'rxjs';
-import { Category, Certification } from './interfaces/certification.interface';
+import { Certification } from './interfaces/certification.interface';
 import { GalleryService } from './services/gallery.service';
 
 @Component({
@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
   preview = false;
   showScrollToTop = false;
   certification!: Certification;
-  categories: Category[] = [];
+  categories: string[] = [];
   certifications: Record<string, Certification[]> = {};
   years: string[] = [];
 
@@ -51,8 +51,8 @@ export class AppComponent implements OnInit {
 
   filterCertifications(filter: string): void {
     this.filteredCertifications =
-      filter && this.categories.includes(filter as Category)
-        ? this.certifications[filter as Category]
+      filter && this.categories.includes(filter)
+        ? this.certifications[filter]
         : [...this.certifications['all']];
     this.years = [
       ...new Set(this.filteredCertifications.map((el) => el.date.slice(0, 4))),
@@ -62,6 +62,9 @@ export class AppComponent implements OnInit {
         (this.filteredCertificationsByYear[year] =
           this.filteredCertifications.filter((el) => el.date.startsWith(year)))
     );
+    setTimeout(() => {
+      this.filter = this.categories.includes(filter) ? filter : '';
+    });
   }
 
   openPreview(certification: Certification): void {
@@ -101,9 +104,10 @@ export class AppComponent implements OnInit {
               (el) => el.category === category
             ))
         );
-        this.filter = this.route.snapshot.queryParamMap.get('filter') || '';
+        this.filterCertifications(
+          this.route.snapshot.queryParamMap.get('filter') || ''
+        );
         this.location.replaceState('');
-        this.filterCertifications(this.filter);
         this.loading = false;
       },
       error: () => (this.loading = false),
